@@ -119,3 +119,4 @@ $lang->cmd_do_social_migration = '마이그레이션 하기';
 $lang->about_social_migration = '소셜XE에서 데이터를 가져와 소셜로그인 모듈에서 사용할 수 있습니다.';
 $lang->msg_not_exists_table_sociallogin = 'sociallogin 테이블이 존재하지 않습니다.';
 $lang->msg_not_exists_table_socialxe = 'socialxe 테이블이 존재하지 않습니다.';
+$lang->msg_about_reset_password_socialxe = '소셜 로그인 계정의 비밀번호 안내';

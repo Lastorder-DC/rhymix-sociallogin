@@ -7,9 +7,12 @@ use Context;
 use FileHandler;
 use MemberController;
 use MemberModel;
+use ModuleModel;
 use PointController;
 use Rhymix\Framework\Exceptions\InvalidRequest;
 use Rhymix\Framework\Exception;
+use Rhymix\Framework\Password;
+use Rhymix\Framework\Security;
 use Rhymix\Modules\Sociallogin\Base;
 use Rhymix\Modules\Sociallogin\Models\Config as ConfigModel;
 use Rhymix\Modules\Sociallogin\Models\User as UserModel;
@@ -199,8 +202,9 @@ class Connect extends Base
 		// 회원 가입 진행
 		if (!$member_srl)
 		{
-			$password = \Rhymix\Framework\Password::getRandomPassword(13);
+			$password = Password::getRandomPassword(13);
 			$nick_name = preg_replace('/[\pZ\pC]+/u', '', $serviceAccessData->profile['user_name']);
+			$user_id = $serviceAccessData->profile['user_id'] ?: "";
 
 			if ($oMemberModel->getMemberSrlByNickName($nick_name))
 			{
@@ -262,7 +266,7 @@ class Connect extends Base
 				}
 
 				$path_parts = pathinfo(parse_url($oDriver->getProfileImage(), PHP_URL_PATH));
-				$randomString = \Rhymix\Framework\Security::getRandom(32);
+				$randomString = Security::getRandom(32);
 				$tmp_file = "{$tmp_dir}{$randomString}profile.{$path_parts['extension']}";
 
 				if(FileHandler::getRemoteFile($oDriver->getProfileImage(), $tmp_file, null, 3, 'GET', null, array(), array(), array(), array('ssl_verify_peer' => false)))
@@ -304,6 +308,7 @@ class Connect extends Base
 			Context::set('user_name', $serviceAccessData->profile['user_name'], true);
 			Context::set('email_address', $email, true);
 			Context::set('accept_agreement', 'Y', true);
+			if($user_id && !\MemberModel::getMemberInfoByUserID($user_id)) Context::set('user_id', $user_id, true);
 
 			$extend = $oDriver->getProfileExtend();
 			Context::set('homepage', $extend->homepage, true);
@@ -359,6 +364,77 @@ class Connect extends Base
 			{
 				MemberController::getInstance()->putSignature($member_srl, $extend->signature);
 			}
+
+			// 비번 변경메일 발송
+			// TODO: 코어에서 별도 함수로 분리시 해당 함수로 대체
+			$member_info = MemberModel::getMemberInfoByMemberSrl($member_srl);
+			$member_config = ModuleModel::getModuleConfig('member');
+			$password_reset_method = intval($member_config->password_reset_method ?? 1);
+
+			// Insert data into the authentication DB
+			$args = new stdClass();
+			$args->user_id = $member_info->user_id;
+			$args->member_srl = $member_info->member_srl;
+			$args->new_password = $password_reset_method == 2 ? '' : Password::getRandomPassword(13);
+			$args->auth_key = Security::getRandom(40, 'hex');
+			$args->auth_type = 'password_v' . $password_reset_method;
+			$args->is_register = 'N';
+
+			$output = executeQuery('member.insertAuthMail', $args);
+
+			global $lang;
+			if ($password_reset_method == 2)
+			{
+				$args->new_password = lang('member.msg_change_after_click');
+				$lang->set('msg_find_account_comment', lang('member.msg_find_account_comment_v2'));
+			}
+			Context::set('auth_args', $args);
+
+			$memberInfo = array();
+			if(is_array($member_config->signupForm))
+			{
+				$exceptForm=array('password', 'find_account_question');
+				foreach($member_config->signupForm as $form)
+				{
+					if(!in_array($form->name, $exceptForm) && $form->isDefaultForm && ($form->required || $form->mustRequired))
+					{
+						$memberInfo[$lang->{$form->name}] = $member_info->{$form->name};
+					}
+				}
+			}
+			else
+			{
+				$memberInfo[$lang->user_id] = $args->user_id;
+				$memberInfo[$lang->user_name] = $args->user_name;
+				$memberInfo[$lang->nick_name] = $args->nick_name;
+				$memberInfo[$lang->email_address] = $args->email_address;
+			}
+			Context::set('memberInfo', $memberInfo);
+
+			if(!$member_config->skin) $member_config->skin = "default";
+			if(!$member_config->colorset) $member_config->colorset = "white";
+
+			Context::set('member_config', $member_config);
+
+			$tpl_path = sprintf('%sskins/%s', \RX_BASEDIR . 'modules/member/', $member_config->skin);
+			if(!is_dir($tpl_path)) $tpl_path = sprintf('%sskins/%s', \RX_BASEDIR . 'modules/member/', 'default');
+
+			$find_url = getFullUrl('', 'module', 'member', 'act', 'procMemberAuthAccount', 'member_srl', $member_info->member_srl, 'auth_key', $args->auth_key);
+			Context::set('find_url', $find_url);
+
+			$oTemplate = new \Rhymix\Framework\Template($tpl_path, 'find_member_account_mail');
+			$content = $oTemplate->compile();
+
+			// Get information of the Webmaster
+			$member_config = ModuleModel::getModuleConfig('member');
+
+			// Send a mail
+			$oMail = new \Rhymix\Framework\Mail();
+			$oMail->setSubject(lang('msg_about_reset_password_socialxe'));
+			$oMail->setBody($content);
+			$oMail->addTo($member_info->email_address, $member_info->nick_name);
+			$oMail->send();
+			// TODO: 코어에서 별도 함수로 분리시 위 코드 해당 함수로 대체
 		}
 		// 이미 가입되어 있었다면 SNS 등록만 진행
 		else
@@ -631,7 +707,7 @@ class Connect extends Base
 		// 원래 설정한 비밀번호가 없을 경우 또는 회원가입창으로 넘어가서 정보를 입력 한 경우 해당 password을 새롭게 생성
 		if(!$args->password || !$args->password2)
 		{
-			$args->password = $args->password2 = \Rhymix\Framework\Password::getRandomPassword(13);
+			$args->password = $args->password2 = Password::getRandomPassword(13);
 		}
 		// 원래 설정한 비밀번호가 잇다면 그 비밀번호를 그대로 사용
 		else

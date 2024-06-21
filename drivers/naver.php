@@ -112,7 +112,11 @@ class Naver extends Base
 		// 프로필 URL : 네이버는 따로 프로필 페이지가 없으므로 네이버 블로그로 설정
 		if ($profile['email'] && strpos($profile['email'], 'naver.com') !== false)
 		{
-			$profileValue['url'] = 'http://blog.naver.com/' . str_replace('@naver.com', '', $profile['email']);
+			$user_id = str_replace('@naver.com', '', $profile['email']);
+			$profileValue['url'] = 'http://blog.naver.com/' . $user_id;
+
+			// 추출한 id가 중복이 아니면 사용
+			if(!\MemberModel::getMemberInfoByUserID($user_id)) $profileValue['user_id'] = $user_id;
 		}
 		else
 		{
