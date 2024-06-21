@@ -416,13 +416,21 @@ class Connect extends Base
 
 			Context::set('member_config', $member_config);
 
-			$tpl_path = sprintf('%sskins/%s', \RX_BASEDIR . 'modules/member/', $member_config->skin);
-			if(!is_dir($tpl_path)) $tpl_path = sprintf('%sskins/%s', \RX_BASEDIR . 'modules/member/', 'default');
+			$tpl_path = sprintf('%sskins/%s/', $this->module_path, $config->skin ?? 'default');
+			if(!is_dir($tpl_path)) $tpl_path = sprintf('%sskins/%s', $this->module_path, 'default');
 
 			$find_url = getFullUrl('', 'module', 'member', 'act', 'procMemberAuthAccount', 'member_srl', $member_info->member_srl, 'auth_key', $args->auth_key);
 			Context::set('find_url', $find_url);
 
-			$oTemplate = new \Rhymix\Framework\Template($tpl_path, 'find_member_account_mail');
+			$time_unit = [
+				86400 => "일",
+				3600 => "시간",
+				60 => "분"
+			];
+			$expires = "{intval($config->authmail_expires)?:1}{$time_unit[$config->authmail_expires_unit?:'일']}";
+			Context::set('expires', $expires);
+
+			$oTemplate = new \Rhymix\Framework\Template($tpl_path, 'reset_password_mail');
 			$content = $oTemplate->compile();
 
 			// Get information of the Webmaster
