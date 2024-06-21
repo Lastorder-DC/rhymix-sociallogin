@@ -372,7 +372,7 @@ class Connect extends Base
 			$password_reset_method = intval($member_config->password_reset_method ?? 1);
 
 			// Insert data into the authentication DB
-			$args = new stdClass();
+			$args = new \stdClass();
 			$args->user_id = $member_info->user_id;
 			$args->member_srl = $member_info->member_srl;
 			$args->new_password = $password_reset_method == 2 ? '' : Password::getRandomPassword(13);
