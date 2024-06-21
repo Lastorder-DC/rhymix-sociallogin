@@ -427,7 +427,7 @@ class Connect extends Base
 				3600 => "시간",
 				60 => "분"
 			];
-			$expires = "{$config->authmail_expires?:1}{$time_unit[$config->authmail_expires_unit?:'일']}";
+			$expires = "{$config->authmail_expires}{$time_unit[$config->authmail_expires_unit?:'일']}";
 			Context::set('expires', $expires);
 
 			$oTemplate = new \Rhymix\Framework\Template($tpl_path, 'reset_password_mail');
