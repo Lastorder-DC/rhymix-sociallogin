@@ -31,7 +31,7 @@ class Discord extends Base
 	function authenticate()
 	{
 		$code = \Context::get('code');
-		
+
 		$config = $this->config;
 		$post = [
 			"grant_type" => "authorization_code",
@@ -46,10 +46,10 @@ class Discord extends Base
 		{
 			return new \BaseObject(-1, 'msg_invalid_request');
 		}
-		
+
 		$accessValue['access'] = $token['access_token'];
 		$accessValue['refresh'] = $token['refresh_token'];
-		
+
 		\Rhymix\Modules\Sociallogin\Base::setDriverAuthData('discord', 'token', $accessValue);
 	}
 
@@ -61,12 +61,12 @@ class Discord extends Base
 	{
 		// 토큰 체크
 		$token = \Rhymix\Modules\Sociallogin\Base::getDriverAuthData('discord')->token['access'];
-		
+
 		if (!$token)
 		{
 			return new \BaseObject(-1, 'msg_errer_api_connect');
 		}
-		
+
 		$headers = array(
 			'Authorization' => "Bearer {$token}",
 		);
@@ -128,7 +128,7 @@ class Discord extends Base
 	function requestAPI($url, $post = array(), $authorization = null, $delete = false)
 	{
 		$resource = \FileHandler::getRemoteResource(self::DISCORD_API_URL . $url, null, 3, empty($post) ? 'GET' : 'POST', null, $authorization, array(), $post);
-		
+
 		return json_decode($resource, true);
 	}
 }
