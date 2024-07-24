@@ -76,6 +76,7 @@ class Discord extends Base
 		$profileValue['email_address'] = $user_info['email'];
 		$profileValue['sns_id'] = $user_info['id'];
 		$profileValue['user_name'] = $user_info['global_name'] ?: $user_info['username'];
+		$profileValue['user_name'] = $user_info['global_name'] ?: $user_info['username'];
 		$profileValue['etc'] = $user_info;
 
 		// 프로필 이미지가 있다면 사용
