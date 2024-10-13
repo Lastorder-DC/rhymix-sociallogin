@@ -103,15 +103,16 @@ class Connect extends Base
 					{
 						$error = lang('sociallogin.msg_invalid_sns_account');
 					}
-					$redirect_url = getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyInfo');
-					break;
-				case 'modify_password':
-					$recheckBool = $this->reCheckSns($oDriver, $type);
-					if(!$recheckBool)
+
+					if($_SESSION['sociallogin_target'] === 'dispMemberModifyPassword')
 					{
-						$error = lang('sociallogin.msg_invalid_sns_account');
+						$redirect_url = getNotEncodedUrl('', 'mid', 'member', 'act', 'dispSocialloginMemberModifyPassword');
 					}
-					$redirect_url = getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', 'dispMemberModifyPassword');
+					else
+					{
+						$redirect_url = getNotEncodedUrl('', 'mid', 'member', 'act', $_SESSION['sociallogin_target']);
+					}
+
 					break;
 				default:
 					$error = lang('sociallogin.msg_not_exist_type');
@@ -140,6 +141,11 @@ class Connect extends Base
 		if ($type == 'register')
 		{
 			$this->setRedirectUrl(getNotEncodedUrl('', 'mid', $_SESSION['sociallogin_current']['mid'], 'act', 'dispSocialloginSnsManage'));
+		}
+		elseif ($type == 'recheck')
+		{
+			unset($_SESSION['sociallogin_target']);
+			$this->setRedirectUrl($redirect_url);
 		}
 		else
 		{
@@ -274,7 +280,9 @@ class Connect extends Base
 					$_SESSION['tmp_sociallogin_input_add_info']['profile_dir'] = $tmp_file;
 				}
 			}
-			
+
+			$extend = $oDriver->getProfileExtend();
+
 			// 회원 정보에서 추가 입력할 데이터가 있을경우 세션값에 소셜정보 입력 후 회원가입 항목으로 이동
 			if ($boolRequired)
 			{
@@ -295,13 +303,19 @@ class Connect extends Base
 				$args->email = $serviceAccessData->profile['email_address'];
 				$args->name = $serviceAccessData->profile['user_name'];
 				$args->service_id = $serviceAccessData->profile['sns_id'];
+				$args->nick_name = $serviceAccessData->profile['nick_name'] ?: $serviceAccessData->profile['user_name'];
 				$args->service = $service;
+				$args->homepage = $extend->homepage;
+				$args->blog = $extend->blog;
+				$args->birthday = $extend->birthday;
+				$args->gender = $extend->gender;
+				$args->age = $extend->age;
 				
 				//TODO (BjRambo) :check again, why save to sessionData?
 				$_SESSION['sociallogin_access_data'] = $args;
-				return $this->setRedirectUrl(getNotEncodedUrl('', 'act', 'dispMemberSignUpForm'));
+				return $this->setRedirectUrl(getNotEncodedUrl('', 'module', 'member', 'act', 'dispSocialloginMemberSignup', 'service', $oDriver->getService()));
 			}
-			
+
 			Context::setRequestMethod('POST');
 			Context::set('password', $password, true);
 			Context::set('nick_name', $nick_name, true);
@@ -310,7 +324,6 @@ class Connect extends Base
 			Context::set('accept_agreement', 'Y', true);
 			if($user_id && !\MemberModel::getMemberInfoByUserID($user_id)) Context::set('user_id', $user_id, true);
 
-			$extend = $oDriver->getProfileExtend();
 			Context::set('homepage', $extend->homepage, true);
 			Context::set('blog', $extend->blog, true);
 			Context::set('birthday', $extend->birthday, true);
@@ -678,22 +691,17 @@ class Connect extends Base
 			}
 		}
 		
-		if($isCheck)
-		{
-			if($type == 'recheck')
-			{
-				$_SESSION['rechecked_password_step'] = 'VALIDATE_PASSWORD';
-			}
-			else
-			{
-				$_SESSION['rechecked_password_modify'] = 'VALIDATE_PASSWORD';
-			}
-			return true;
-		}
-		else
+		if(!$isCheck)
 		{
 			return false;
 		}
+
+		if($type == 'recheck')
+		{
+			$_SESSION['rechecked_password_step'] = 'VALIDATE_PASSWORD';
+		}
+
+		return true;
 	}
 
 	/**
