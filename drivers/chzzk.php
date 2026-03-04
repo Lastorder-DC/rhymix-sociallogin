@@ -99,7 +99,6 @@ class Chzzk extends Base
 		}
 
 		$profileValue['sns_id'] = $channelId;
-		$profileValue['email_address'] = $channelId . '@chzzk';
 		$profileValue['user_name'] = $channelName;
 		$profileValue['profile_image'] = $channelImageUrl;
 		$profileValue['url'] = 'https://chzzk.naver.com/' . $channelId;
