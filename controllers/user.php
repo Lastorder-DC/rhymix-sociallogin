@@ -357,6 +357,11 @@ class User extends Base
 					{
 						unset($formTags[$key]);
 					}
+
+					if($formtag->name == 'nick_name')
+					{
+						unset($formTags[$key]);
+					}
 				}
 			}
 		}
@@ -382,7 +387,7 @@ class User extends Base
 	{
 		Context::setRequestMethod('POST');
 		$password = \Rhymix\Framework\Password::getRandomPassword(13);
-		$nick_name = preg_replace('/[\pZ\pC]+/u', '', $_SESSION['sociallogin_access_data']->nick_name);
+		$nick_name = $_SESSION['tmp_sociallogin_input_add_info']['nick_name'];
 
 		$vars = Context::getRequestVars();
 		if($vars->email_address)
@@ -395,7 +400,7 @@ class User extends Base
 		}
 
 		Context::set('password', $password, true);
-//		Context::set('nick_name', $nick_name, true);
+		Context::set('nick_name', $nick_name, true);
 		Context::set('user_name', $_SESSION['sociallogin_access_data']->user_name, true);
 		Context::set('email_address', $email, true);
 		Context::set('accept_agreement', 'Y', true);

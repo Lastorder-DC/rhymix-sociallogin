@@ -103,6 +103,7 @@ class Chzzk extends Base
 		$profileValue['profile_image'] = $channelImageUrl;
 		$profileValue['url'] = 'https://chzzk.naver.com/' . $channelId;
 		$profileValue['etc'] = $profile['content'];
+		if(!\MemberModel::getMemberInfoByUserID($channelId)) $profileValue['user_id'] = $channelId;
 
 		\Rhymix\Modules\Sociallogin\Base::setDriverAuthData('chzzk', 'profile', $profileValue);
 

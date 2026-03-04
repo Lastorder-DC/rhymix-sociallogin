@@ -227,7 +227,7 @@ class Connect extends Base
 				{
 					continue;
 				}
-				if($item->name == 'email_address')
+				if($oDriver->getService() != 'chzzk' && $item->name == 'email_address')
 				{
 					continue;
 				}

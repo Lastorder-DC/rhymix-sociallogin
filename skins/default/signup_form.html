@@ -3,7 +3,7 @@
 <!--%load_js_plugin("ui")-->
 <!--%load_js_plugin("ui.datepicker")-->
 <include target="../../modules/member/skins/default/common_header.html" />
-<h1 style="border-bottom:1px solid #ccc">추가 정보 입력 해주세요.</h1>
+<h1 style="border-bottom:1px solid #ccc">추가 정보를 입력해 주세요.</h1>
 <div cond="$XE_VALIDATOR_MESSAGE && $XE_VALIDATOR_ID == 'modules/sociallogin/skins'" class="message {$XE_VALIDATOR_MESSAGE_TYPE}">
 	<p>{$XE_VALIDATOR_MESSAGE}</p>
 </div>
@@ -31,9 +31,9 @@
 		<label for="{$identifierForm->name}" class="control-label"><em style="color:red">*</em> {$identifierForm->title}</label>
 		<div class="controls">
 			<input type="text"|cond="$identifierForm->name!='email_address'" type="email"|cond="$identifierForm->name=='email_address'" name="{$identifierForm->name}" id="{$identifierForm->name}" value="" required />
-			<p class="help-inline" cond="$identifierForm->name == 'email_address' && $email_confirmation_required == 'Y'">
+			<!-- <p class="help-inline" cond="$identifierForm->name == 'email_address' && $email_confirmation_required == 'Y'">
 				{$lang->msg_email_confirmation_required}
-			</p>
+			</p> -->
 		</div>
 	</div>
 	<div class="control-group" loop="$formTags=>$formTag">
