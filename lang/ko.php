@@ -123,3 +123,5 @@ $lang->msg_about_reset_password_socialxe = '소셜 로그인 계정 비밀번호
 $lang->msg_body_reset_password_mail_socialxe = '소셜 로그인 가입시 비밀번호는 임의로 생성됩니다. 아래 링크를 방문하여 비밀번호 설정을 진행하실 수 있습니다.';
 $lang->msg_about_change_password_link_socialxe = '아래의 링크를 클릭하면 임의로 생성된 비밀번호를 새로운 비밀번호로 변경할 수 있습니다.';
 $lang->msg_about_link_expire_socialxe = '링크는 %s뒤 만료됩니다.';
+$lang->about_chzzk_client_id = '<a href="https://developers.chzzk.naver.com/">치지직 개발자 센터</a>에서 발급받은 Client ID를 입력해주세요.';
+$lang->about_chzzk_client_secret = '<a href="https://developers.chzzk.naver.com/">치지직 개발자 센터</a>에서 발급받은 Client Secret를 입력해주세요.';

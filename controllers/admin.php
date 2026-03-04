@@ -151,6 +151,8 @@ class Admin extends Base
 			'tiktok_app_id',
 			'tiktok_client_key',
 			'tiktok_client_secret',
+			'chzzk_client_id',
+			'chzzk_client_secret',
 		);
 
 		$config = self::getConfig();

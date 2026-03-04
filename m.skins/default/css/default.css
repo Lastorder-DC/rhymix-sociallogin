@@ -9,6 +9,7 @@
 .sns_icon.naver{background:url(../img/naver.png) no-repeat;}
 .sns_icon.kakao{background:url(../img/kakao.png) no-repeat;}
 .sns_icon.discord{background:url(../img/discord.png) no-repeat;}
+.sns_icon.chzzk {background:url(../img/chzzk.svg) no-repeat; background-size: 22px 22px; width:26px;height:26px;}
 
 .sociallogin_login{padding:0;margin:0;list-style:none; overflow:hidden;}
 .sociallogin_login li{display:block;padding:0; margin-bottom:10px; text-align:center;}
@@ -73,3 +74,10 @@
 .sociallogin_apple span.label {font-weight:bold;}
 .sociallogin_apple span.icon {background: url('../img/btn_apple.png') transparent 10px 50% no-repeat;display: inline-block;vertical-align: middle;width: 43px;height:40px;}
 .sociallogin_apple span.buttonText {display:inline-block;vertical-align:middle;padding-left:10px;}
+
+.sociallogin_chzzk .loginBtn {display:inline-block;background: #00FFA3;color:#000000; width: 200px; border-radius:5px;text-align:left;}
+.sociallogin_chzzk a.loginBtn {text-decoration:none;}
+.sociallogin_chzzk .loginBtn:hover {background: #33FFB5;cursor:hand;}
+.sociallogin_chzzk span.label {font-weight:bold;}
+.sociallogin_chzzk span.icon {background: url('../img/chzzk.svg') no-repeat; background-size: 30px 30px; background-position: 8px center; display: inline-block;vertical-align: middle;width: 43px;height:40px;}
+.sociallogin_chzzk span.buttonText {display:inline-block;vertical-align:middle;padding-left:10px;}
