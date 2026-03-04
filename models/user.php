@@ -154,7 +154,13 @@ class User extends Base
 				$buff[] = "<li><div class=\"sociallogin_{$sns->name}\">";
 				$buff[] = "<a class=\"loginBtn\" href=\"{$sns->auth_url}\"><img src='./modules/sociallogin/skins/default/img/tiktok.svg' style='width:32px; margin:10px 1px 10px 10px;' /><span class=\"buttonText\"> {$signString} with {$ucfirstName}</span>";
 				$buff[] = '</a></div></li>';
-
+			}
+			elseif ($sns->name == 'chzzk')
+			{
+				$ucfirstName = ucfirst($sns->name);
+				$buff[] = "<li><div class=\"sociallogin_{$sns->name}\">";
+				$buff[] = "<a class=\"loginBtn\" style=\"display: flex;align-items: center;\" href=\"{$sns->auth_url}\"><img src='./modules/sociallogin/skins/default/img/chzzk.svg' style='width:32px; margin:4px 1px 4px 10px;' /><span class=\"buttonText\"> {$signString} with {$ucfirstName}</span>";
+				$buff[] = '</a></div></li>';
 			}
 			else
 			{
