@@ -258,6 +258,32 @@
 		</div>
 	</section>
 
+	<section class="section">
+		<h1>Chzzk API</h1>
+		<div class="x_control-group">
+			<label class="x_control-label" for="chzzk_client_id">Client ID</label>
+			<div class="x_controls">
+				<input type="text" name="chzzk_client_id" id="chzzk_client_id" value="{$config->chzzk_client_id}" />
+				<a href="#chzzk_client_id_help" class="x_icon-question-sign" data-toggle>{$lang->help}</a>
+				<p id="chzzk_client_id_help" class="x_help-block" hidden>{$lang->about_chzzk_client_id}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label" for="chzzk_client_secret">Client Secret</label>
+			<div class="x_controls">
+				<input type="text" name="chzzk_client_secret" id="chzzk_client_secret" value="{$config->chzzk_client_secret}" />
+				<a href="#chzzk_client_secret_help" class="x_icon-question-sign" data-toggle>{$lang->help}</a>
+				<p id="chzzk_client_secret_help" class="x_help-block" hidden>{$lang->about_chzzk_client_secret}</p>
+			</div>
+		</div>
+		<div class="x_control-group">
+			<label class="x_control-label">Redirect URL</label>
+			<div class="x_controls">
+				{getNotEncodedFullUrl('', 'module', 'sociallogin', 'act', 'procSocialloginCallback','service','chzzk')}
+			</div>
+		</div>
+	</section>
+
 	<div class="x_clearfix btnArea">
 		<span class="x_pull-right"><input class="x_btn x_btn-primary" type="submit" value="{$lang->cmd_save}" /></span>
 	</div>

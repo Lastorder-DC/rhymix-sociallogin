@@ -32,6 +32,8 @@
 		<td>
 			<!--@if($val->service == 'tiktok')-->
 			<img src="./img/tiktok.svg" style="width:26px;height:26px;" /> {ucwords($val->service)}
+			<!--@elseif($val->service == 'chzzk')-->
+			<img src="./img/chzzk.svg" style="width:26px;height:26px;" /> {ucwords($val->service)}
 			<!--@else-->
 			<div class="sns_icon {$val->service}">{ucwords($val->service)}</div>
 			<!--@end-->
